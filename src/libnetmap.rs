@@ -2,10 +2,6 @@ use std::ffi::CStr;
 use libc::{c_int, c_uint, c_char, c_void, size_t};
 use netmap::*;
 
-extern {
-    fn memcpy(dest: *mut c_void, src: *mut c_void, n: size_t) -> *mut c_void;
-}
-
 pub type cleanup = extern fn(*mut nmport_cleanup_d, *mut nmport_d) -> c_void;
 
 /**
@@ -15,8 +11,8 @@ it has been copied from nm_port.c and is used here.
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct nmport_cleanup_d {
-    next: *mut nmport_cleanup_d,
-    cleanup: cleanup,
+    pub next: *mut nmport_cleanup_d,
+    pub cleanup: cleanup,
 }
 
 
@@ -166,14 +162,14 @@ pub struct nmport_d {
     /* the nmctx used when this nmport_d was created */
     pub ctx: *mut nmctx,
 
-    register_done: c_int,	/* nmport_register() has been called */
-    mmap_done: c_int,		/* nmport_mmap() has been called */
+    pub register_done: c_int,	/* nmport_register() has been called */
+    pub mmap_done: c_int,		/* nmport_mmap() has been called */
     /* pointer to the extmem option contained in the hdr options, if any */
-    extmem: *mut nmreq_opt_extmem,
+    pub extmem: *mut nmreq_opt_extmem,
 
     /* the fields below are compatible with nm_open() */
-    fd: c_int,				/* "/dev/netmap", -1 if not open */
-    nifp: *mut netmap_if,		/* pointer to the netmap_if */
+    pub fd: c_int,				/* "/dev/netmap", -1 if not open */
+    pub nifp: *mut netmap_if,		/* pointer to the netmap_if */
     pub first_tx_ring: u16,
     pub last_tx_ring: u16,
     pub first_rx_ring: u16,
@@ -182,7 +178,7 @@ pub struct nmport_d {
     pub cur_rx_ring: u16,
 
     /* LIFO list of cleanup functions (used internally) */
-    clist: *mut nmport_cleanup_d,
+    pub clist: *mut nmport_cleanup_d,
 }
 
 
@@ -638,13 +634,13 @@ pub type nmctx_lock_cb = extern fn(*mut nmctx, c_int) -> c_void;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct nmctx {
-    verbose: c_int,
-    error: nmctx_error_cb,
-    malloc: nmctx_malloc_cb,
-    free: nmctx_free_cb,
-    lock: nmctx_lock_cb,
+    pub verbose: c_int,
+    pub error: nmctx_error_cb,
+    pub malloc: nmctx_malloc_cb,
+    pub free: nmctx_free_cb,
+    pub lock: nmctx_lock_cb,
 
-    mem_descs:  *mut nmem_d,
+    pub mem_descs:  *mut nmem_d,
 }
 
 
@@ -654,17 +650,17 @@ pub struct nmctx {
 
 /* struct nmem_d - describes a memory region currently used */
 pub struct nmem_d {
-    mem_id: u16,	/* the region netmap identifier */
-    refcount: c_int,		/* how many nmport_d's point here */
-    mem: *mut c_void,		/* memory region base address */
-    size: size_t,		/* memory region size */
-    is_extmem: c_int,		/* was it obtained via extmem? */
+    pub mem_id: u16,	/* the region netmap identifier */
+    pub refcount: c_int,		/* how many nmport_d's point here */
+    pub mem: *mut c_void,		/* memory region base address */
+    pub size: size_t,		/* memory region size */
+    pub is_extmem: c_int,		/* was it obtained via extmem? */
 
     /* pointers for the circular list implementation.
      * The list head is the mem_descs filed in the nmctx
      */
-    next: *mut nmem_d,
-    prev: *mut nmem_d,
+    pub next: *mut nmem_d,
+    pub prev: *mut nmem_d,
 }
 
 #[test]
