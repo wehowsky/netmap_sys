@@ -18,12 +18,13 @@ name = "netmap_sys"
 crate_type = [ "rlib", "dylib" ]
 
 [features]
-
 default = []
 netmap_with_libs = []
+libnetmap = []
 
 [dependencies]
 libc = "0.2"
 
 [build-dependencies]
 cc = "1.0.35"
+pkg-config = "0.3.27"
