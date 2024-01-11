@@ -220,7 +220,7 @@ extern { pub fn nmport_close(d: *mut nmport_d) -> c_void;}
  * Returns 0 on success an -1 on error.
  */
 
-extern { pub fn nmport_inject(d: *mut nmport_d, buf: *const c_void) -> c_int;}
+extern { pub fn nmport_inject(d: *mut nmport_d, buf: *const c_void, size: size_t) -> c_int;}
 
 /*
  * the functions below can be used to split the functionality of
@@ -529,7 +529,7 @@ pub const NMREQ_OPT_MAXKEYS: u16 = 16;	/* max nr of recognized keys per option *
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct nmreq_opt_key {
-    pub key: c_char,	/* the key name */
+    pub key: *const c_char,	/* the key name */
     pub id: c_int,			/* its position in the parse context */
     pub flags: c_uint,
 
@@ -571,7 +571,7 @@ pub struct nmreq_parse_ctx {
      * is assigned to the corresponding entry in this array, based on the
      * key id. Unassigned keys are left at NULL.
      */
-    pub keys: [c_char; NMREQ_OPT_MAXKEYS as usize],
+    pub keys: *mut [c_char; NMREQ_OPT_MAXKEYS as usize],
 }
 
 /* nmreq_get_mem_id - get the mem_id of the given port
