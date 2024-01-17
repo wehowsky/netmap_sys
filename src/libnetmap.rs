@@ -217,7 +217,7 @@ extern { pub fn nmport_close(d: *mut nmport_d) -> c_void;}
  * Sends a packet using the cur_tx_ring and updates the index
  * to use all available tx rings in turn. Note: the packet is copied.
  *
- * Returns 0 on success an -1 on error.
+ * Returns 0 on error and a positive number on success representing how many bytes was injected.
  */
 
 extern { pub fn nmport_inject(d: *mut nmport_d, buf: *const c_void, size: size_t) -> c_int;}
