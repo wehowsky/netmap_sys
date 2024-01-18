@@ -1,6 +1,7 @@
 use libc::{c_int, c_uint, c_ulong, c_char, timeval, ssize_t, IF_NAMESIZE};
 
-pub const IFNAMSIZ: usize = 64;
+pub const IFNAMSIZ: usize = 16;
+pub const NETMAP_REQ_IFNAMSIZ: usize = 64;
 
 pub const NETMAP_API: c_int = 11;
 pub const NETMAP_MIN_API: c_int = 11;
@@ -37,7 +38,7 @@ pub struct nmreq_header {
     pub nr_version: u16,	        /* API version */
     pub nr_reqtype: u16,        	/* nmreq type (NETMAP_REQ_*) */
     pub nr_reserved: u32,       	/* must be zero */
-    pub nr_name: [c_char; IFNAMSIZ],/* port name */
+    pub nr_name: [c_char; NETMAP_REQ_IFNAMSIZ],/* port name */
     pub nr_options: u64,        	/* command-specific options */
     pub nr_body: u64,   	        /* ptr to nmreq_xyz struct */
 }
@@ -119,7 +120,8 @@ pub struct netmap_ring {
 
     pub ts: timeval,
 
-    _padding: [u8; 72],
+    pub offset_mask: u64,
+    pub buf_align: u64,
     pub sem: [u8; 128], // FIXME  __attribute__((__aligned__(NM_CACHE_ALIGN)))
 
     pub slot: [netmap_slot; 0], // FIXME Check struct size/field alignment
