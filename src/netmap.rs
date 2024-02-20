@@ -103,6 +103,11 @@ pub const NS_PORT_MASK: c_int = (0xff << NS_PORT_SHIFT);
 
 // FIXME NS_RFRAGS
 
+// declare sem field of netmap_ring as it's own datatype with custom alignment to account for
+// __attribute__((__aligned__(NM_CACHE_ALIGN))) in the C code
+#[repr(C, align(128))]
+struct netmap_ring_sem_t([u8; 128]);
+
 #[repr(C)]
 #[derive(Copy)]
 pub struct netmap_ring {
@@ -122,9 +127,12 @@ pub struct netmap_ring {
 
     pub offset_mask: u64,
     pub buf_align: u64,
-    pub sem: [u8; 128], // FIXME  __attribute__((__aligned__(NM_CACHE_ALIGN)))
+    sem: netmap_ring_sem_t,
 
-    pub slot: [netmap_slot; 0], // FIXME Check struct size/field alignment
+    // set size to 0 to avoid Rust allocating memory. But in fact, the kernel module will make
+    // sure that a slots array immediately follow this struct.
+    // to access this data, use unsafe code to offset from here some number of slots.
+    pub slot: [netmap_slot; 0],
 }
 
 impl Clone for netmap_ring {
