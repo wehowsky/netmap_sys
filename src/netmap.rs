@@ -1,4 +1,4 @@
-use libc::{c_int, c_uint, c_ulong, c_char, timeval, ssize_t, IF_NAMESIZE};
+use libc::{c_int, c_uint, c_ulong, c_char, timeval, ssize_t};
 
 pub const IFNAMSIZ: usize = 16;
 pub const NETMAP_REQ_IFNAMSIZ: usize = 64;
@@ -99,13 +99,14 @@ pub const NS_INDIRECT: u16 = 0x0010;
 pub const NS_MOREFRAG: u16 = 0x0020;
 
 pub const NS_PORT_SHIFT: c_int = 8;
-pub const NS_PORT_MASK: c_int = (0xff << NS_PORT_SHIFT);
+pub const NS_PORT_MASK: c_int = 0xff << NS_PORT_SHIFT;
 
 // FIXME NS_RFRAGS
 
 // declare sem field of netmap_ring as it's own datatype with custom alignment to account for
 // __attribute__((__aligned__(NM_CACHE_ALIGN))) in the C code
 #[repr(C, align(128))]
+#[derive(Copy, Clone)]
 struct netmap_ring_sem_t([u8; 128]);
 
 #[repr(C)]

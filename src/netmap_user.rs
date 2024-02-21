@@ -44,8 +44,8 @@ pub unsafe fn NETMAP_BUF(ring: *mut netmap_ring, index: isize) -> *mut c_char {
 
 #[inline(always)]
 pub unsafe fn NETMAP_BUF_IDX(ring: *mut netmap_ring, buf: *mut c_char) -> usize {
-    ((buf as *mut c_char).offset( -((ring as *mut c_char) as isize) )
-                         .offset((*ring).buf_ofs as isize) as usize / (*ring).nr_buf_size as usize)
+    (buf as *mut c_char).offset( -((ring as *mut c_char) as isize) )
+                         .offset((*ring).buf_ofs as isize) as usize / (*ring).nr_buf_size as usize
 }
 
 #[inline(always)]
